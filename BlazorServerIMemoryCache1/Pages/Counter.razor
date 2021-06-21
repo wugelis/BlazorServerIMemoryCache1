@@ -1,0 +1,27 @@
+﻿@page "/counter"
+@using BlazorServerIMemoryCache1.Models
+@using Microsoft.Extensions.Caching.Memory
+@inject IMemoryCache memoryCache
+@inject CounterModel counter
+
+<h1>Counter</h1>
+
+<p>Current count: @counter.Counter</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        counter.Counter++;
+        memoryCache.Set("_COUNTER_MODEL", counter.Counter);
+    }
+
+    protected override void OnInitialized()
+    {
+        counter.Counter = memoryCache.Get("_COUNTER_MODEL") as Nullable<int> ?? 0;
+        base.OnInitialized();
+    }
+}
